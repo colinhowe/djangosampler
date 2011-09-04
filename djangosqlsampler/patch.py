@@ -50,7 +50,7 @@ class SamplingCursorWrapper(object):
 
     def _should_sample(self, time):
         if SQL_SAMPLE_COST:
-            return time * random.random() < SQL_SAMPLE_FREQ
+            return time * random.random() > 1 - SQL_SAMPLE_FREQ
         else:
             return random.random() < SQL_SAMPLE_FREQ
 
