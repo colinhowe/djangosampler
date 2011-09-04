@@ -21,6 +21,7 @@ Install::
 
 Configure:
  * Add djangosqlsampler to your INSTALLED_APPS
+ * Add the tables (manage.py syncdb or use South)
  * Set SQL_SAMPLE_FREQ in your settings.py to something between 0 and 1 (it is a 
    percentage)
  * Add the views::
