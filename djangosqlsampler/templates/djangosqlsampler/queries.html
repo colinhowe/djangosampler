@@ -1,21 +1,21 @@
 {% extends "djangosqlsampler/base.html" %}
 {% block body %}
-<h3>Stacks {{ start_offset }} to {{ end_offset }} of {{ total_stacks }}</h3>
+<h3>Queries {{ start_offset }} to {{ end_offset }} of {{ total_queries }}</h3>
 <table>
     <tr>
         <th></th>
         <th><a href="{{ by_count_url }}">Count</a></th>
         <th><a href="{{ by_duration_url }}">Total Duration (s)</a></th>
         <th><a href="{{ by_cost_url }}">Total Cost</a></th>
-        <th>Last line</th>
+        <th>SQL</th>
     </tr>
-    {% for stack in stacks %}
+    {% for query in queries %}
         <tr class="{% cycle 'odd' 'even' %}">
-            <td class="chooser"><a href={{ stack.url }}>&#x0398;</a></td>
-            <td>{{ stack.count }}</td>
-            <td>{{ stack.total_duration|floatformat:4 }}</td>
-            <td>{{ stack.total_cost }}</td>
-            <td>{{ stack.last_stack_line }}</td>
+            <td class="chooser"><a href={{ query.url }}>&#x0398;</a></td>
+            <td>{{ query.count }}</td>
+            <td>{{ query.total_duration|floatformat:4 }}</td>
+            <td>{{ query.total_cost }}</td>
+            <td>{{ query.sql }}</td>
         </tr>
     {% endfor %}
 </table>
