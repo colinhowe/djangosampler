@@ -1,0 +1,33 @@
+{% extends "djangosqlsampler/base.html" %}
+{% block body %}
+<h3>Stacks {{ start_offset }} to {{ end_offset }} of {{ total_stacks }}</h3>
+<table>
+    <tr>
+        <th></th>
+        <th><a href="{{ by_count_url }}">Count</a></th>
+        <th><a href="{{ by_duration_url }}">Total Duration (s)</a></th>
+        <th><a href="{{ by_cost_url }}">Total Cost</a></th>
+        <th>Last line</th>
+    </tr>
+    {% for stack in stacks %}
+        <tr class="{% cycle 'odd' 'even' %}">
+            <td class="chooser"><a href={{ stack.url }}>&#x0398;</a></td>
+            <td>{{ stack.count }}</td>
+            <td>{{ stack.total_duration|floatformat:4 }}</td>
+            <td>{{ stack.total_cost }}</td>
+            <td>{{ stack.last_stack_line }}</td>
+        </tr>
+    {% endfor %}
+</table>
+<div id="page-selector">
+    Page: 
+    {% for page in pages %}
+        {% if page.number == current_page %}
+            {{ page.number }}
+        {% else %}
+        <a href="{{ page.url }}">{{ page.number }}</a>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}
+

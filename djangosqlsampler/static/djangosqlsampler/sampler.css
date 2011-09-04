@@ -1,0 +1,50 @@
+body {
+    font-family: sans-serif;
+    color: #333;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+tr.even {
+    background-color: #ffffbb;
+}
+
+td {
+    padding: 4px 8px;
+    font-size: 11pt;
+}
+
+th {
+    font-size: 11pt;
+    padding: 2px 8px;
+}
+
+#page-selector {
+    padding-top: 20px;
+}
+
+h1 {
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: #0000dd;
+}
+
+pre {
+    background-color: #ddd;
+    padding: 10px;
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+#footer {
+    padding-top: 30px;
+}

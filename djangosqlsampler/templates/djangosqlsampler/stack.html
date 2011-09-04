@@ -1,0 +1,18 @@
+{% extends "djangosqlsampler/base.html" %}
+{% load humanize %}
+{% block body %}
+<a href="{{ stacks_url }}">View stack list</a>
+<h3>{{ stack.count|intcomma }} occurrences, {{ stack.total_duration|floatformat:4|intcomma }}s, {{ stack.total_cost|intcomma }} cost</h3>
+<h3>Example Query</h3>
+<pre>{{ example_query }}</pre>
+<h3>Trace</h3>
+<pre>{{ stack.stack }}</pre>
+<h3>Recent Queries</h3>
+{% for query in queries %}
+<h4>{{ query.duration_ms|floatformat:3|intcomma }}ms</h4>
+<pre>{{ query.sql }}
+
+Params:
+{{ query.params }}</pre>
+{% endfor %}
+{% endblock %}
