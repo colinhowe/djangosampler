@@ -29,11 +29,12 @@ def get_tidy_stacktrace():
     sampler_in_stack = False
     for trace in stack[:-3]:
         path = os.path.realpath(trace[0])
-        if django_path in path and not 'contrib' in path:
-            continue
 
         if 'djangosqlsampler' in trace[0]:
             sampler_in_stack = True
+        
+        if django_path in path and not 'contrib' in path:
+            continue
 
         tidy_stack.append("%s:%s (%s): %s" % trace)
 

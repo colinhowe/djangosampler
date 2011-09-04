@@ -39,8 +39,8 @@ SQL_SAMPLE_FREQ
 SQL_SAMPLE_FREQ configures the percentage of queries that will be recorded. It
 should be between 0.0 and 1.0.
 
-If this is set to 0 or is not set then the patched cursor will not be installed
-and your code will run as normal.
+If this is not set then the patched cursor will not be installed and your code 
+will run as normal.
 
 SQL_SAMPLE_COST
 ~~~~~~~~~~~~~~~
