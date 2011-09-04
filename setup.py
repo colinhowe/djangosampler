@@ -15,6 +15,7 @@ setup(
 	author='Colin Howe',
 	author_email='colin@colinhowe.co.uk',
 	packages=['djangosqlsampler'],
+    package_data={'djangosqlsampler': ['templates/djangosqlsampler/*','static/djangosqlsampler/*']},
 	classifiers=[
 		'Development Status :: 4 - Beta',
 		'Environment :: Web Environment',
