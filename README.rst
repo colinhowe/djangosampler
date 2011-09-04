@@ -2,6 +2,7 @@ Django SQL Sampler
 ==================
 
 Author: Colin Howe (@colinhowe)
+
 License: Apache 2.0
 
 About
@@ -15,6 +16,7 @@ Installation
 ------------
 
 Install::
+
     python setup.py install
 
 Configure:
@@ -22,6 +24,7 @@ Configure:
  * Set SQL_SAMPLE_FREQ in your settings.py to something between 0 and 1 (it is a 
    percentage)
  * Add the views::
+
     urlpatterns += patterns('',
         (r'^sql-sampler/', include('djangosqlsampler.urls')),
     )
@@ -46,6 +49,7 @@ takes. If a query takes 2 seconds then it will be twice as likely to be sampled
 as a query that takes 1 second.
 
 The cost for a query is adjusted to account for this as follows::
+
     cost = max(1.0, time * SQL_SAMPLE_FREQ) / SQL_SAMPLE_FREQ
 
 Viewing Results
