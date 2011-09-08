@@ -62,6 +62,15 @@ Viewing Results
 After letting the sampler run for a while you will be able to view queries
 (grouped by their origin) at the URL you configured.
 
+
+How Does It Work
+----------------
+
+The sampler works by altering the cursor that Django uses to execute queries.
+Instead of the default cursor, a wrapper is created and used. The wrapper intercepts
+all the calls to execute and execute_many and samples them when appropriate.
+
+
 Feedback
 --------
 
