@@ -11,30 +11,22 @@ from django.utils.encoding import force_unicode
 from models import Query, Sample, Stack
 from time import time
 
-django_path = os.path.realpath(os.path.dirname(django.__file__))
-
 SQL_SAMPLE_COST = getattr(settings, 'SQL_SAMPLE_COST', False)
 SQL_SAMPLE_FREQ = float(getattr(settings, 'SQL_SAMPLE_FREQ', 0))
 
 def get_tidy_stacktrace():
-    """Gets a tidy stacktrace that omits Django internals (except contrib).
-    The tail of the stack is also removed to exclude sampler internals.
-    Will return a tuple of the stack printed cleanly and a boolean indicating 
-    whether the stack contains traces from the sampler itself (indicates the 
-    sampler being sampled).
+    """Gets a tidy stacktrace. The tail of the stack is removed to exclude 
+    sampler internals. Will return a tuple of the stack printed cleanly and
+    a boolean indicating whether the stack contains traces from the sampler
+    itself (indicates the sampler being sampled).
     """
     stack = traceback.extract_stack()
     tidy_stack = [] 
     sampler_in_stack = False
     for trace in stack[:-3]:
-        path = os.path.realpath(trace[0])
-
         if 'djangosqlsampler' in trace[0]:
             sampler_in_stack = True
         
-        if django_path in path and not 'contrib' in path:
-            continue
-
         tidy_stack.append("%s:%s (%s): %s" % trace)
 
     return "\n".join(tidy_stack), sampler_in_stack
@@ -49,8 +41,12 @@ class SamplingCursorWrapper(object):
 
     def _should_sample(self, time):
         if SQL_SAMPLE_COST:
+            print 'freq'
+            print SQL_SAMPLE_FREQ
             return time * random.random() > 1 - SQL_SAMPLE_FREQ
         else:
+            print 'freq2'
+            print SQL_SAMPLE_FREQ
             return random.random() < SQL_SAMPLE_FREQ
 
     def _calculate_cost(self, time):
@@ -70,6 +66,7 @@ class SamplingCursorWrapper(object):
     def log_sql(self, sql, time, params):
         if not self._should_sample(time):
             return
+        print 'b'
 
         stack, recursed = get_tidy_stacktrace()
         if recursed:

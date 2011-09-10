@@ -8,5 +8,7 @@
 <pre>{{ explain }}</pre>
 <h3>Callers</h3>
 {% for stack in stacks %}
+<h4>{{ stack.count|intcomma }} times, {{ stack.total_duration|floatformat:4|intcomma }}s, {{ stack.total_cost|floatformat:4|intcomma }} cost</h4>
+<pre>{{ stack.stack }}</pre>
 {% endfor %}
 {% endblock %}

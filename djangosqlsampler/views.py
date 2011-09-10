@@ -60,7 +60,7 @@ def query(request, sql_hash):
     query = Query.objects.get(hash=sql_hash)
 
     stacks = Stack.objects.filter(query=query)
-    stacks = stacks.order_by('-count')
+    stacks = stacks.order_by('-total_cost')
     stacks = list(stacks)
 
     sample = Sample.objects.filter(stack=stacks[0])[0]
