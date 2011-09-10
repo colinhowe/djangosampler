@@ -9,7 +9,7 @@ long_desc = open(root_dir + '/README.rst').read()
 
 setup(
 	name='djangosqlsampler',
-	version='0.1.1',
+	version='0.1.3',
 	description='Samples a percentage of SQL queries and groups them together for easy viewing',
 	url='https://github.com/colinhowe/djangosqlsampler',
 	author='Colin Howe',

@@ -16,7 +16,6 @@ django_path = os.path.realpath(os.path.dirname(django.__file__))
 SQL_SAMPLE_COST = getattr(settings, 'SQL_SAMPLE_COST', False)
 SQL_SAMPLE_FREQ = float(getattr(settings, 'SQL_SAMPLE_FREQ', 0))
 
-
 def get_tidy_stacktrace():
     """Gets a tidy stacktrace that omits Django internals (except contrib).
     The tail of the stack is also removed to exclude sampler internals.
@@ -145,9 +144,11 @@ class SamplingCursorWrapper(object):
     def __iter__(self):
         return iter(self.cursor)
 
+import django.db.backends
+old_cursor = django.db.backends.BaseDatabaseWrapper.cursor
+
 def get_cursor(self):
-    cursor = self._cursor()
+    cursor = old_cursor(self)
     return SamplingCursorWrapper(cursor, self)
 
-import django.db.backends
 django.db.backends.BaseDatabaseWrapper.cursor = get_cursor
