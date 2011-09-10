@@ -41,12 +41,8 @@ class SamplingCursorWrapper(object):
 
     def _should_sample(self, time):
         if SQL_SAMPLE_COST:
-            print 'freq'
-            print SQL_SAMPLE_FREQ
             return time * random.random() > 1 - SQL_SAMPLE_FREQ
         else:
-            print 'freq2'
-            print SQL_SAMPLE_FREQ
             return random.random() < SQL_SAMPLE_FREQ
 
     def _calculate_cost(self, time):
@@ -66,7 +62,6 @@ class SamplingCursorWrapper(object):
     def log_sql(self, sql, time, params):
         if not self._should_sample(time):
             return
-        print 'b'
 
         stack, recursed = get_tidy_stacktrace()
         if recursed:
