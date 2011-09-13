@@ -1,6 +1,5 @@
-from django.conf import settings
+import plugins
 
-if getattr(settings, 'SQL_SAMPLE_FREQ', 0):
-    import patch
+VERSION = '0.2.0'
 
-VERSION = '0.1.3'
+plugins.install_plugins()

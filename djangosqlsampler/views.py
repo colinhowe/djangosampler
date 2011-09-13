@@ -29,7 +29,7 @@ def queries(request, offset=0, sort='total_duration'):
     end_offset = start_offset + len(queries)
 
     for query in queries:
-        query.url = reverse('query', kwargs={'sql_hash': query.hash})
+        query.url = reverse('query', kwargs={'query_hash': query.hash})
 
     current_page = 1 + start_offset / PAGE_SIZE
     max_pages = int(ceil(total_queries / float(PAGE_SIZE)))
@@ -56,8 +56,8 @@ def queries(request, offset=0, sort='total_duration'):
             context_instance=RequestContext(request))
 
 @superuser_required
-def query(request, sql_hash):
-    query = Query.objects.get(hash=sql_hash)
+def query(request, query_hash):
+    query = Query.objects.get(hash=query_hash)
 
     stacks = Stack.objects.filter(query=query)
     stacks = stacks.order_by('-total_cost')
@@ -70,10 +70,10 @@ def query(request, sql_hash):
     explain = 'Unavailable'
     try:
         cursor = connection.cursor()
-        sql = sample.sql
+        raw_query = sample.query
         params = json.loads(sample.params)
-        cursor.execute('EXPLAIN %s' % sql, params)
-        explain = 'EXPLAIN %s\n\n' % (sql % tuple(params))
+        cursor.execute('EXPLAIN %s' % raw_query, params)
+        explain = 'EXPLAIN %s\n\n' % (raw_query % tuple(params))
         row = cursor.fetchone()
         explain += "Select type:   %s\n" % row[1]
         explain += "Table:         %s\n" % row[2]

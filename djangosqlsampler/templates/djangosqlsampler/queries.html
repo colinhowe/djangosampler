@@ -7,7 +7,7 @@
         <th><a href="{{ by_count_url }}">Count</a></th>
         <th><a href="{{ by_duration_url }}">Total Duration (s)</a></th>
         <th><a href="{{ by_cost_url }}">Total Cost</a></th>
-        <th>SQL</th>
+        <th>Query</th>
     </tr>
     {% for query in queries %}
         <tr class="{% cycle 'odd' 'even' %}">
@@ -15,7 +15,7 @@
             <td>{{ query.count }}</td>
             <td>{{ query.total_duration|floatformat:4 }}</td>
             <td>{{ query.total_cost }}</td>
-            <td>{{ query.sql }}</td>
+            <td>{{ query.query }}</td>
         </tr>
     {% endfor %}
 </table>

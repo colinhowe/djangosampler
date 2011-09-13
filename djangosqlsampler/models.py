@@ -4,7 +4,7 @@ class Query(models.Model):
     """A query. This is the highest level of grouping.
     """
     hash = models.CharField(primary_key=True, max_length=32)
-    sql = models.TextField()
+    query = models.TextField()
     total_duration = models.FloatField(default=0, db_index=True)
     total_cost = models.FloatField(default=0, db_index=True)
     count = models.IntegerField(default=0, db_index=True)
@@ -23,9 +23,9 @@ class Stack(models.Model):
         return self.stack.split('\n')[-1]
 
 class Sample(models.Model):
-    """A sampled SQL query.
+    """A sampled query.
     """
-    sql = models.TextField()
+    query = models.TextField()
     duration = models.FloatField()
     cost = models.FloatField()
     stack = models.ForeignKey('Stack')

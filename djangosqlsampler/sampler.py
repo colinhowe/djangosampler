@@ -23,7 +23,7 @@ def _get_tidy_stacktrace():
     tidy_stack = [] 
     sampler_in_stack = False
     for trace in stack[:-3]:
-        if 'djangosqlsampler' in trace[0]:
+        if 'djangosqlsampler' in trace[0] and 'sampler.py' in trace[0]:
             sampler_in_stack = True
         
         tidy_stack.append("%s:%s (%s): %s" % trace)

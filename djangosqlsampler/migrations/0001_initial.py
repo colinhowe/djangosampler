@@ -11,7 +11,7 @@ class Migration(SchemaMigration):
         # Adding model 'Query'
         db.create_table('djangosqlsampler_query', (
             ('hash', self.gf('django.db.models.fields.CharField')(max_length=32, primary_key=True)),
-            ('sql', self.gf('django.db.models.fields.TextField')()),
+            ('query', self.gf('django.db.models.fields.TextField')()),
             ('total_duration', self.gf('django.db.models.fields.FloatField')(default=0, db_index=True)),
             ('total_cost', self.gf('django.db.models.fields.FloatField')(default=0, db_index=True)),
             ('count', self.gf('django.db.models.fields.IntegerField')(default=0, db_index=True)),
@@ -32,7 +32,7 @@ class Migration(SchemaMigration):
         # Adding model 'Sample'
         db.create_table('djangosqlsampler_sample', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('sql', self.gf('django.db.models.fields.TextField')()),
+            ('query', self.gf('django.db.models.fields.TextField')()),
             ('duration', self.gf('django.db.models.fields.FloatField')()),
             ('cost', self.gf('django.db.models.fields.FloatField')()),
             ('stack', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['djangosqlsampler.Stack'])),
@@ -58,7 +58,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Query'},
             'count': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
             'hash': ('django.db.models.fields.CharField', [], {'max_length': '32', 'primary_key': 'True'}),
-            'sql': ('django.db.models.fields.TextField', [], {}),
+            'query': ('django.db.models.fields.TextField', [], {}),
             'total_cost': ('django.db.models.fields.FloatField', [], {'default': '0', 'db_index': 'True'}),
             'total_duration': ('django.db.models.fields.FloatField', [], {'default': '0', 'db_index': 'True'})
         },
@@ -68,7 +68,7 @@ class Migration(SchemaMigration):
             'duration': ('django.db.models.fields.FloatField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'params': ('django.db.models.fields.TextField', [], {}),
-            'sql': ('django.db.models.fields.TextField', [], {}),
+            'query': ('django.db.models.fields.TextField', [], {}),
             'stack': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['djangosqlsampler.Stack']"})
         },
         'djangosqlsampler.stack': {
