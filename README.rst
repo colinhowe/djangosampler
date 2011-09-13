@@ -28,6 +28,7 @@ Configure:
     urlpatterns += patterns('',
         (r'^sql-sampler/', include('djangosqlsampler.urls')),
     )
+
  * Set DJANGO_SAMPLER_FREQ to a value other than 0
  * Set DJANGO_SAMPLER_PLUGINS to a list of plugins. For just sampling SQL a 
    sensible default is::
@@ -40,6 +41,12 @@ Configure:
    There are several plugins available and it is worthwhile reading through
    them to get the most use out of this tool.
 
+
+Viewing Results
+===============
+
+After letting the sampler run for a while you will be able to view queries
+(grouped by their origin) at the URL you configured.
 
 Configuration
 =============
@@ -87,8 +94,11 @@ The cost for a query is adjusted to account for this as follows::
 Plugins
 =======
 
-SQL
----
+A list of available plugins follows. You can write your own plugin and this is 
+described in the section 'Writing Your Own Plugins'.
+
+Django SQL
+~~~~~~~~~~
 
 Plugin class: djangosampler.plugins.sql.Sql
 
@@ -96,15 +106,14 @@ The SQL sampler plugin will sample a percentage of SQL queries that occur in
 your application. The samples will be grouped by query and stack traces will be
 recorded to find where the queries are originating.
 
-Viewing Results
-===============
+Writing Your Own Plugins
+========================
 
-After letting the sampler run for a while you will be able to view queries
-(grouped by their origin) at the URL you configured.
-
+TODO. For now, look in the plugins folder and copy :)
 
 Feedback
 ========
 
 Feedback is always welcome! Github or twitter (@colinhowe) are the best places
 to reach me.
+
