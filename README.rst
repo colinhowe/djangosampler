@@ -38,7 +38,7 @@ Configure:
         # Plugins are applied in the same order as this list
     )
 
-   There are several Plugins_ available and it is worthwhile reading through
+   There are several plugins available and it is worthwhile reading through
    them to get the most use out of this tool.
 
 
