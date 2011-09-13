@@ -67,7 +67,9 @@ class SamplingCursorWrapper(object):
         if recursed:
             # Don't log the sampler being sampled
             return
-        stack_hash = hash(tuple(stack))
+        # The same stack may create different SQL - so we have to include the
+        # SQL in the stack hash to ensure that it is unique for every query
+        stack_hash = hash((tuple(stack), sql))
 
         sql_hash = hash(sql)
         try:
