@@ -28,12 +28,24 @@ Configure:
     urlpatterns += patterns('',
         (r'^sql-sampler/', include('djangosqlsampler.urls')),
     )
- * Configure the set of plugins that you want - the order is important for any
-   plugins that apply tags to querys (see Plugins section below)
+ * Set DJANGO_SAMPLER_FREQ to a value other than 0
+ * Set DJANGO_SAMPLER_PLUGINS to a list of plugins. For just sampling SQL a 
+   sensible default is::
+    
+    DJANGO_SAMPLER_PLUGINS = (
+        'djangosampler.plugins.sql.Sql',
+        # Plugins are applied in the same order as this list
+    )
+
+   There are several plugins available and it is worthwhile reading through
+   them to get the most use out of this tool.
 
 
-Plugins
-=======
+Configuration
+=============
+
+DJANGO_SAMPLER_PLUGINS
+~~~~~~~~~~~~~~~~~~~~~~
 
 Django SQL Sampler has a plugin architecture to allow you to control how
 much data you want to be collected.
@@ -41,35 +53,28 @@ much data you want to be collected.
 In your settings.py add the following::
 
     DJANGO_SAMPLER_PLUGINS = (
-        'sql',
+        'djangosampler.plugins.sql.Sql',
         # Plugins are applied in the same order as this list
     )
 
 The example above will add the SQL plugin.
 
-Available plugins and their settings are described below.
+Available plugins and their settings are described in the Plugins section below.
 
-SQL Sampler
------------
+DJANGO_SAMPLER_FREQ
+~~~~~~~~~~~~~~~~~~~
 
-The SQL sampler plugin will sample a percentage of SQL queries that occur in
-your application. The samples will be grouped by query and stack traces will be
-recorded to find where the queries are originating.
+DJANGO_SAMPLER_FREQ configures the percentage of queries that will be recorded. 
+It should be between 0.0 and 1.0.
 
-SQL_SAMPLE_FREQ
-~~~~~~~~~~~~~~~
+If this is not set then no plugins will be installed and your code will run as 
+normal.
 
-SQL_SAMPLE_FREQ configures the percentage of queries that will be recorded. It
-should be between 0.0 and 1.0.
+DJANGO_SAMPLER_USE_COST
+~~~~~~~~~~~~~~~~~~~~~~~
 
-If this is not set then the patched cursor will not be installed and your code 
-will run as normal.
-
-SQL_SAMPLE_COST
-~~~~~~~~~~~~~~~
-
-SQL_SAMPLE_COST will enable cost-based sampling. This causes queries that run
-for a long time to be sampled more often than short queries. 
+DJANGO_SAMPLER_USE_COST will enable cost-based sampling. This causes queries 
+that run for a long time to be sampled more often than short queries. 
 
 The chance that a query is sampled is multiplied by the total time the query
 takes. If a query takes 2 seconds then it will be twice as likely to be sampled
@@ -77,7 +82,19 @@ as a query that takes 1 second.
 
 The cost for a query is adjusted to account for this as follows::
 
-    cost = max(1.0, time * SQL_SAMPLE_FREQ) / SQL_SAMPLE_FREQ
+    cost = max(1.0, time * DJANGO_SAMPLER_FREQ) / DJANGO_SAMPLER_FREQ
+
+Plugins
+=======
+
+SQL
+---
+
+Plugin class: djangosampler.plugins.sql.Sql
+
+The SQL sampler plugin will sample a percentage of SQL queries that occur in
+your application. The samples will be grouped by query and stack traces will be
+recorded to find where the queries are originating.
 
 Viewing Results
 ===============
