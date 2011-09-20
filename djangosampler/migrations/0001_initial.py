@@ -12,9 +12,10 @@ class Migration(SchemaMigration):
         db.create_table('djangosampler_query', (
             ('hash', self.gf('django.db.models.fields.CharField')(max_length=32, primary_key=True)),
             ('query', self.gf('django.db.models.fields.TextField')()),
-            ('total_duration', self.gf('django.db.models.fields.FloatField')(default=0, db_index=True)),
-            ('total_cost', self.gf('django.db.models.fields.FloatField')(default=0, db_index=True)),
-            ('count', self.gf('django.db.models.fields.IntegerField')(default=0, db_index=True)),
+            ('total_duration', self.gf('django.db.models.fields.FloatField')(default=0)),
+            ('total_cost', self.gf('django.db.models.fields.FloatField')(default=0)),
+            ('count', self.gf('django.db.models.fields.IntegerField')(default=0)),
+            ('query_type', self.gf('django.db.models.fields.CharField')(max_length=32, db_index=True)),
         ))
         db.send_create_signal('djangosampler', ['Query'])
 
@@ -22,9 +23,9 @@ class Migration(SchemaMigration):
         db.create_table('djangosampler_stack', (
             ('hash', self.gf('django.db.models.fields.CharField')(max_length=32, primary_key=True)),
             ('stack', self.gf('django.db.models.fields.TextField')()),
-            ('total_duration', self.gf('django.db.models.fields.FloatField')(default=0, db_index=True)),
-            ('total_cost', self.gf('django.db.models.fields.FloatField')(default=0, db_index=True)),
-            ('count', self.gf('django.db.models.fields.IntegerField')(default=0, db_index=True)),
+            ('total_duration', self.gf('django.db.models.fields.FloatField')(default=0)),
+            ('total_cost', self.gf('django.db.models.fields.FloatField')(default=0)),
+            ('count', self.gf('django.db.models.fields.IntegerField')(default=0)),
             ('query', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['djangosampler.Query'])),
         ))
         db.send_create_signal('djangosampler', ['Stack'])
@@ -56,11 +57,12 @@ class Migration(SchemaMigration):
     models = {
         'djangosampler.query': {
             'Meta': {'object_name': 'Query'},
-            'count': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
+            'count': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'hash': ('django.db.models.fields.CharField', [], {'max_length': '32', 'primary_key': 'True'}),
             'query': ('django.db.models.fields.TextField', [], {}),
-            'total_cost': ('django.db.models.fields.FloatField', [], {'default': '0', 'db_index': 'True'}),
-            'total_duration': ('django.db.models.fields.FloatField', [], {'default': '0', 'db_index': 'True'})
+            'query_type': ('django.db.models.fields.CharField', [], {'max_length': '32', 'db_index': 'True'}),
+            'total_cost': ('django.db.models.fields.FloatField', [], {'default': '0'}),
+            'total_duration': ('django.db.models.fields.FloatField', [], {'default': '0'})
         },
         'djangosampler.sample': {
             'Meta': {'object_name': 'Sample'},
@@ -73,12 +75,12 @@ class Migration(SchemaMigration):
         },
         'djangosampler.stack': {
             'Meta': {'object_name': 'Stack'},
-            'count': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
+            'count': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'hash': ('django.db.models.fields.CharField', [], {'max_length': '32', 'primary_key': 'True'}),
             'query': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['djangosampler.Query']"}),
             'stack': ('django.db.models.fields.TextField', [], {}),
-            'total_cost': ('django.db.models.fields.FloatField', [], {'default': '0', 'db_index': 'True'}),
-            'total_duration': ('django.db.models.fields.FloatField', [], {'default': '0', 'db_index': 'True'})
+            'total_cost': ('django.db.models.fields.FloatField', [], {'default': '0'}),
+            'total_duration': ('django.db.models.fields.FloatField', [], {'default': '0'})
         }
     }
 

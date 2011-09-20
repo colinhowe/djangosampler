@@ -22,7 +22,7 @@ def superuser_required(view_func):
 def queries(request, offset=0, sort='total_duration'):
     start_offset = int(offset)
     total_queries = Query.objects.count()
-    queries = Query.objects.order_by(sort)
+    queries = Query.objects.filter(query_type='mongo').order_by(sort)
     queries = queries.reverse()
     queries = queries[start_offset:start_offset+PAGE_SIZE]
     queries = list(queries)

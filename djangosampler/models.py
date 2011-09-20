@@ -8,7 +8,7 @@ class Query(models.Model):
     total_duration = models.FloatField(default=0)
     total_cost = models.FloatField(default=0)
     count = models.IntegerField(default=0)
-    query_type = models.TextField(db_index=True)
+    query_type = models.CharField(db_index=True, max_length=32)
 
 class Stack(models.Model):
     """A stack for a set of queries.
