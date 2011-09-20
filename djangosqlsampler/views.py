@@ -85,7 +85,7 @@ def query(request, query_hash):
         explain += "Rows:          %s\n" % row[8]
         explain += "Extra:         %s\n" % row[9]
 
-    except Exception, e:
+    except Exception:
         pass
     finally:
         if cursor:

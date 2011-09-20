@@ -27,7 +27,7 @@ class SamplingCursorWrapper(object):
     def log_sql(self, sql, time, params):
         if not should_sample(time):
             return
-        sample(sql, time, params)
+        sample('sql', sql, time, params)
 
     def execute(self, sql, params=()):
         start = time()

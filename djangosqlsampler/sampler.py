@@ -1,5 +1,4 @@
 import json
-import os
 import random
 import traceback
 
@@ -53,7 +52,7 @@ def should_sample(time):
         return random.random() < FREQ
  
 
-def sample(query, time, params):
+def sample(query_type, query, time, params):
     '''Main method that records the given query. 
     
     The params argument will be
@@ -72,7 +71,9 @@ def sample(query, time, params):
     query_hash = hash(query)
     try:
         query_model, _ = Query.objects.get_or_create(
-                hash=query_hash, defaults={'query': query})
+                hash=query_hash, defaults={
+                    'query_type': query_type, 'query': query
+                })
     except DatabaseError:
         # This is likely because the database hasn't been created yet.
         # We can exit here - we don't want to cause the world to break
@@ -91,7 +92,7 @@ def sample(query, time, params):
     params = _json_params(params)
 
     try:
-        sample_model = Sample.objects.create(
+        Sample.objects.create(
                 query=query, params=params, duration=time, cost=cost,
                 stack=stack_model)
     except DatabaseError:

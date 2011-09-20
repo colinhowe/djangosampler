@@ -3,17 +3,12 @@ from django.test import TestCase
 
 from plugins import install_plugins
 
-import patch
-
 class DummyPlugin(object):
     @staticmethod
     def install():
         DummyPlugin.install_called = True
 
-    @staticmethod
-    def tag_trace(trace):
-        DummyPlugin.tag_trace_called = trace
-        return None
+    
 
 
 class TestPlugins(TestCase):
