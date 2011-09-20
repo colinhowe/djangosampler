@@ -1,6 +1,6 @@
-==================
-Django SQL Sampler
-==================
+==============
+Django Sampler
+==============
 
 Author: Colin Howe (@colinhowe)
 
@@ -9,8 +9,8 @@ License: Apache 2.0
 About
 =====
 
-Django SQL Sampler allows you to sample a percentage of your SQL queries and
-view the ones that are taking up the most time. The queries are grouped
+Django Sampler allows you to sample a percentage of your queries (SQL, Mongo,
+etc) and view the ones that are taking up the most time. The queries are grouped
 together by where they originated from in your code.
 
 Installation
@@ -21,12 +21,12 @@ Install::
     python setup.py install
 
 Configure:
- * Add djangosqlsampler to your INSTALLED_APPS
+ * Add djangosampler to your INSTALLED_APPS
  * Add the tables (manage.py syncdb or manage.py migrate if you use South)
  * Add the views::
 
     urlpatterns += patterns('',
-        (r'^sql-sampler/', include('djangosqlsampler.urls')),
+        (r'^sampler/', include('djangosampler.urls')),
     )
 
  * Set DJANGO_SAMPLER_FREQ to a value other than 0
@@ -54,7 +54,7 @@ Configuration
 DJANGO_SAMPLER_PLUGINS
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Django SQL Sampler has a plugin architecture to allow you to control how
+Django Sampler has a plugin architecture to allow you to control how
 much data you want to be collected.
 
 In your settings.py add the following::

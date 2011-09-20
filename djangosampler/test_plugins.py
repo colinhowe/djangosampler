@@ -17,7 +17,7 @@ class TestPlugins(TestCase):
         DummyPlugin.tag_trace_called = None
 
     def test_install_plugins(self):
-        settings.DJANGO_SAMPLER_PLUGINS = ('djangosqlsampler.test_plugins.DummyPlugin', )
+        settings.DJANGO_SAMPLER_PLUGINS = ('djangosampler.test_plugins.DummyPlugin', )
         install_plugins()
 
         self.assertTrue(DummyPlugin.install_called)

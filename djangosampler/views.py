@@ -51,7 +51,7 @@ def queries(request, offset=0, sort='total_duration'):
     by_duration_url = get_sort_url('total_duration')
     by_cost_url = get_sort_url('total_cost')
 
-    return render_to_response('djangosqlsampler/queries.html', 
+    return render_to_response('djangosampler/queries.html', 
             locals(),
             context_instance=RequestContext(request))
 
@@ -94,7 +94,7 @@ def query(request, query_hash):
     queries_url = reverse('queries',
             kwargs={'sort': 'total_duration', 'offset': 0})
 
-    return render_to_response('djangosqlsampler/query.html', 
+    return render_to_response('djangosampler/query.html', 
             locals(),
             context_instance=RequestContext(request))
 

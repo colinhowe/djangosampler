@@ -1,6 +1,6 @@
 from time import time
 
-from djangosqlsampler.sampler import should_sample, sample
+from djangosampler.sampler import should_sample, sample
 
 class Sql(object):
     '''Plugin that patches Django's cursors to use a sampling cursor.
