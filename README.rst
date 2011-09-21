@@ -106,6 +106,17 @@ The SQL sampler plugin will sample a percentage of SQL queries that occur in
 your application. The samples will be grouped by query and stack traces will be
 recorded to find where the queries are originating.
 
+MongoDB
+~~~~~~~
+
+Plugin class: djangosampler.plugins.mongo.Mongo
+
+The MongoDB plugin will sample a percentage of Mongo commands (queries,
+inserts, etc) that occur in your application. The samples will be grouped by
+command and stack traces will be recorded to find where the queries are 
+originating.
+
+
 Writing Your Own Plugins
 ========================
 
