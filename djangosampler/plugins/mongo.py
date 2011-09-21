@@ -41,8 +41,8 @@ class Mongo(object):
         return getattr(cursor, '_Cursor__{0}'.format(name))
 
     @staticmethod
-    def should_sample_refresh(cursor):
-        return Mongo.privar(cursor, 'id') is None
+    def pre_refresh(cursor):
+        cursor._is_getmore = Mongo.privar(cursor, 'id') is not None
 
     @staticmethod
     def get_refresh_query(cursor):
@@ -65,7 +65,10 @@ class Mongo(object):
                 query_spec['query'] = query_son['query']
         else:
             # Normal Query
-            command = 'query'
+            if cursor._is_getmore:
+                command = 'cursor_more'
+            else:
+                command = 'query'
             query_spec['query'] = query_son['$query']
 
             def fmt(field, direction):
@@ -75,7 +78,6 @@ class Mongo(object):
                 ordering = ', '.join(fmt(f, d) 
                         for f, d in query_son['$orderby'].items())
 
-
         query_spec = Mongo.parameterise_dict(query_spec)
         if ordering:
             query_spec['ordering'] = ordering
@@ -84,23 +86,21 @@ class Mongo(object):
     @staticmethod
     def make_wrapper(name, method):
         sampling_method = getattr(Mongo, 'get_%s_query' % name)
-        should_sample_method = getattr(Mongo, 'should_sample_%s' % name, 
-                lambda *args, **kwargs: True)
+        pre_invoke = getattr(Mongo, 'pre_%s' % name, None)
         def sampler(*args, **kwargs):
             start = time.time()
             try:
-                should_sample_query = should_sample_method(*args, **kwargs)
+                if pre_invoke:
+                    pre_invoke(*args, **kwargs)
                 return method(*args, **kwargs)
             finally:
                 stop = time.time()
-                if should_sample_query and should_sample(stop - start):
+                if should_sample(stop - start):
                     query = sampling_method(*args, **kwargs)
                     if query:
                         sample('mongo', query, stop - start, [args, kwargs])
 
         return sampler
-
-
 
     @staticmethod
     def install():
@@ -116,42 +116,3 @@ class Mongo(object):
                 method.im_class, 
                 method.im_func.func_name, 
                 Mongo.make_wrapper(name, method))
-        
-
-class SamplingCursorWrapper(object):
-    """A cursor wrapper that will sample a % of SQL queries.
-    """
-    def __init__(self, cursor, db):
-        self.cursor = cursor
-        self.db = db
-
-    def log_sql(self, sql, time, params):
-        if not should_sample(time):
-            return
-        sample('sql', sql, time, params)
-
-    def execute(self, sql, params=()):
-        start = time()
-        try:
-            return self.cursor.execute(sql, params)
-        finally:
-            stop = time()
-            self.log_sql(sql, stop - start, params)
-
-    def executemany(self, sql, param_list):
-        start = time()
-        try:
-            return self.cursor.executemany(sql, param_list)
-        finally:
-            stop = time()
-            self.log_sql(sql, stop - start, param_list)
-
-    def __getattr__(self, attr):
-        if attr in self.__dict__:
-            return self.__dict__[attr]
-        else:
-            return getattr(self.cursor, attr)
-
-    def __iter__(self):
-        return iter(self.cursor)
-

@@ -8,6 +8,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 from models import Query, Sample, Stack
+from plugins import get_view_addons
 
 PAGE_SIZE = 20
 
@@ -19,10 +20,10 @@ def superuser_required(view_func):
     return wrapped_view
 
 @superuser_required
-def queries(request, offset=0, sort='total_duration'):
+def queries(request, query_type, offset=0, sort='total_duration'):
     start_offset = int(offset)
-    total_queries = Query.objects.count()
-    queries = Query.objects.filter(query_type='mongo').order_by(sort)
+    total_queries = Query.objects.filter(query_type=query_type).count()
+    queries = Query.objects.filter(query_type=query_type).order_by(sort)
     queries = queries.reverse()
     queries = queries[start_offset:start_offset+PAGE_SIZE]
     queries = list(queries)
@@ -37,7 +38,11 @@ def queries(request, offset=0, sort='total_duration'):
 
     pages = list([{ 
             'number': page, 
-            'url': reverse('queries', kwargs={'offset': PAGE_SIZE * (page - 1), 'sort': sort})
+            'url': reverse('queries', kwargs={
+                'query_type': query_type,
+                'offset': PAGE_SIZE * (page - 1), 
+                'sort': sort
+            })
         }
         for page in pages
     ])
@@ -45,14 +50,31 @@ def queries(request, offset=0, sort='total_duration'):
     def get_sort_url(field):
         if field == sort:
             field = '-%s' % field
-        return reverse('queries', kwargs={'offset': 0, 'sort': field})
+        return reverse('queries', kwargs={
+            'query_type': query_type,
+            'offset': 0, 
+            'sort': field
+        })
 
     by_count_url = get_sort_url('count')
     by_duration_url = get_sort_url('total_duration')
     by_cost_url = get_sort_url('total_cost')
 
+    query_types = _get_query_types()
+
     return render_to_response('djangosampler/queries.html', 
-            locals(),
+            {
+                'by_count_url': by_count_url,
+                'by_duration_url': by_duration_url,
+                'by_cost_url': by_cost_url,
+                'query_types': query_types,
+                'start_offset': start_offset,
+                'end_offset': end_offset,
+                'total_queries': total_queries,
+                'pages': pages,
+                'current_page': current_page,
+                'queries': queries,
+            },
             context_instance=RequestContext(request))
 
 @superuser_required
@@ -65,34 +87,11 @@ def query(request, query_hash):
 
     sample = Sample.objects.filter(stack=stacks[0])[0]
 
-    # Get an explain plain
-    cursor = None
-    explain = 'Unavailable'
-    try:
-        cursor = connection.cursor()
-        raw_query = sample.query
-        params = json.loads(sample.params)
-        cursor.execute('EXPLAIN %s' % raw_query, params)
-        explain = 'EXPLAIN %s\n\n' % (raw_query % tuple(params))
-        row = cursor.fetchone()
-        explain += "Select type:   %s\n" % row[1]
-        explain += "Table:         %s\n" % row[2]
-        explain += "Type:          %s\n" % row[3]
-        explain += "Possible keys: %s\n" % row[4]
-        explain += "Key:           %s\n" % row[5]
-        explain += "Key length:    %s\n" % row[6]
-        explain += "Ref:           %s\n" % row[7]
-        explain += "Rows:          %s\n" % row[8]
-        explain += "Extra:         %s\n" % row[9]
+    extra = ""
+    for addon in get_view_addons(query.query_type):
+        extra += addon(query, stacks)
 
-    except Exception:
-        pass
-    finally:
-        if cursor:
-            cursor.close()
-
-    queries_url = reverse('queries',
-            kwargs={'sort': 'total_duration', 'offset': 0})
+    query_types = _get_query_types()
 
     return render_to_response('djangosampler/query.html', 
             locals(),
@@ -100,5 +99,27 @@ def query(request, query_hash):
 
 @superuser_required
 def index(request):
+    query_type = _get_query_types()[0].name
     return HttpResponseRedirect(reverse('queries',
-        kwargs={'sort': 'total_duration', 'offset': 0}))
+        kwargs={
+            'query_type': query_type, 
+            'sort': 'total_duration', 
+            'offset': 0
+    }))
+
+def _get_query_types():
+    query_type_names = Query.objects.values_list('query_type', flat=True).distinct()
+    query_objs = []
+    for query_type in query_type_names:
+        query_obj = {}
+        query_obj['name'] = query_type
+        query_obj['friendly_name'] = query_type.capitalize()
+        query_obj['url'] = reverse('queries',
+            kwargs={
+                'query_type': query_type,
+                'sort': 'total_duration', 
+                'offset': 0
+        })
+        query_objs.append(query_obj)
+    return query_objs
+
