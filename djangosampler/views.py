@@ -99,7 +99,7 @@ def query(request, query_hash):
 
 @superuser_required
 def index(request):
-    query_type = _get_query_types()[0].name
+    query_type = _get_query_types()[0]['name']
     return HttpResponseRedirect(reverse('queries',
         kwargs={
             'query_type': query_type, 

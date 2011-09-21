@@ -14,7 +14,7 @@ setup(
 	url='https://github.com/colinhowe/djangosampler',
 	author='Colin Howe',
 	author_email='colin@colinhowe.co.uk',
-	packages=['djangosampler'],
+	packages=['djangosampler', 'djangosampler.plugins', 'djangosampler.migrations'],
     package_data={'djangosampler': ['templates/djangosampler/*','static/djangosampler/*']},
 	classifiers=[
 		'Development Status :: 4 - Beta',
