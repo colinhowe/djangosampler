@@ -11,7 +11,7 @@ def setup_test_environment():
     
     settings.configure(**{
         "DATABASE_ENGINE": "sqlite3",
-        "INSTALLED_APPS": ("djangosqlsampler", ),
+        "INSTALLED_APPS": ("djangosampler", ),
     })
 
 

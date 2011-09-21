@@ -4,28 +4,29 @@ class Query(models.Model):
     """A query. This is the highest level of grouping.
     """
     hash = models.CharField(primary_key=True, max_length=32)
-    sql = models.TextField()
-    total_duration = models.FloatField(default=0, db_index=True)
-    total_cost = models.FloatField(default=0, db_index=True)
-    count = models.IntegerField(default=0, db_index=True)
+    query = models.TextField()
+    total_duration = models.FloatField(default=0)
+    total_cost = models.FloatField(default=0)
+    count = models.IntegerField(default=0)
+    query_type = models.CharField(db_index=True, max_length=32)
 
 class Stack(models.Model):
     """A stack for a set of queries.
     """
     hash = models.CharField(primary_key=True, max_length=32)
     stack = models.TextField()
-    total_duration = models.FloatField(default=0, db_index=True)
-    total_cost = models.FloatField(default=0, db_index=True)
-    count = models.IntegerField(default=0, db_index=True)
+    total_duration = models.FloatField(default=0)
+    total_cost = models.FloatField(default=0)
+    count = models.IntegerField(default=0)
     query = models.ForeignKey('Query')
 
     def last_stack_line(self):
         return self.stack.split('\n')[-1]
 
 class Sample(models.Model):
-    """A sampled SQL query.
+    """A sampled query.
     """
-    sql = models.TextField()
+    query = models.TextField()
     duration = models.FloatField()
     cost = models.FloatField()
     stack = models.ForeignKey('Stack')

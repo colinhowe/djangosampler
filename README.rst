@@ -1,52 +1,87 @@
-Django SQL Sampler
-==================
+==============
+Django Sampler
+==============
 
 Author: Colin Howe (@colinhowe)
 
 License: Apache 2.0
 
 About
------
+=====
 
-Django SQL Sampler allows you to sample a percentage of your SQL queries and
-view the ones that are taking up the most time. The queries are grouped
+Django Sampler allows you to sample a percentage of your queries (SQL, Mongo,
+etc) and view the ones that are taking up the most time. The queries are grouped
 together by where they originated from in your code.
 
 Installation
-------------
+============
 
 Install::
 
     python setup.py install
 
 Configure:
- * Add djangosqlsampler to your INSTALLED_APPS
- * Add the tables (manage.py syncdb)
- * Set SQL_SAMPLE_FREQ in your settings.py to something between 0 and 1 (it is a 
-   percentage)
+ * Add djangosampler to your INSTALLED_APPS
+ * Add the tables (manage.py syncdb or manage.py migrate if you use South)
  * Add the views::
 
     urlpatterns += patterns('',
-        (r'^sql-sampler/', include('djangosqlsampler.urls')),
+        (r'^sampler/', include('djangosampler.urls')),
     )
 
+ * Set DJANGO_SAMPLER_FREQ to a value other than 0
+ * Set DJANGO_SAMPLER_PLUGINS to a list of plugins. For just sampling SQL a 
+   sensible default is::
+    
+    DJANGO_SAMPLER_PLUGINS = (
+        'djangosampler.plugins.sql.Sql',
+        # Plugins are applied in the same order as this list
+    )
+
+   There are several plugins available and it is worthwhile reading through
+   them to get the most use out of this tool.
+
+
+Viewing Results
+===============
+
+After letting the sampler run for a while you will be able to view queries
+(grouped by their origin) at the URL you configured.
+
 Configuration
--------------
+=============
 
-SQL_SAMPLE_FREQ
-~~~~~~~~~~~~~~~
+DJANGO_SAMPLER_PLUGINS
+~~~~~~~~~~~~~~~~~~~~~~
 
-SQL_SAMPLE_FREQ configures the percentage of queries that will be recorded. It
-should be between 0.0 and 1.0.
+Django Sampler has a plugin architecture to allow you to control how
+much data you want to be collected.
 
-If this is not set then the patched cursor will not be installed and your code 
-will run as normal.
+In your settings.py add the following::
 
-SQL_SAMPLE_COST
-~~~~~~~~~~~~~~~
+    DJANGO_SAMPLER_PLUGINS = (
+        'djangosampler.plugins.sql.Sql',
+        # Plugins are applied in the same order as this list
+    )
 
-SQL_SAMPLE_COST will enable cost-based sampling. This causes queries that run
-for a long time to be sampled more often than short queries. 
+The example above will add the SQL plugin.
+
+Available plugins and their settings are described in the Plugins section below.
+
+DJANGO_SAMPLER_FREQ
+~~~~~~~~~~~~~~~~~~~
+
+DJANGO_SAMPLER_FREQ configures the percentage of queries that will be recorded. 
+It should be between 0.0 and 1.0.
+
+If this is not set then no plugins will be installed and your code will run as 
+normal.
+
+DJANGO_SAMPLER_USE_COST
+~~~~~~~~~~~~~~~~~~~~~~~
+
+DJANGO_SAMPLER_USE_COST will enable cost-based sampling. This causes queries 
+that run for a long time to be sampled more often than short queries. 
 
 The chance that a query is sampled is multiplied by the total time the query
 takes. If a query takes 2 seconds then it will be twice as likely to be sampled
@@ -54,24 +89,31 @@ as a query that takes 1 second.
 
 The cost for a query is adjusted to account for this as follows::
 
-    cost = max(1.0, time * SQL_SAMPLE_FREQ) / SQL_SAMPLE_FREQ
+    cost = max(1.0, time * DJANGO_SAMPLER_FREQ) / DJANGO_SAMPLER_FREQ
 
-Viewing Results
----------------
+Plugins
+=======
 
-After letting the sampler run for a while you will be able to view queries
-(grouped by their origin) at the URL you configured.
+A list of available plugins follows. You can write your own plugin and this is 
+described in the section 'Writing Your Own Plugins'.
 
+Django SQL
+~~~~~~~~~~
 
-How Does It Work
-----------------
+Plugin class: djangosampler.plugins.sql.Sql
 
-The sampler works by altering the cursor that Django uses to execute queries.
-Instead of the default cursor, a wrapper is created and used. The wrapper intercepts
-all the calls to execute and execute_many and samples them when appropriate.
+The SQL sampler plugin will sample a percentage of SQL queries that occur in
+your application. The samples will be grouped by query and stack traces will be
+recorded to find where the queries are originating.
 
+Writing Your Own Plugins
+========================
+
+TODO. For now, look in the plugins folder and copy :)
 
 Feedback
---------
+========
 
-Feedback is always welcome!
+Feedback is always welcome! Github or twitter (@colinhowe) are the best places
+to reach me.
+

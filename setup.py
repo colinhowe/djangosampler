@@ -8,14 +8,14 @@ if not root_dir:
 long_desc = open(root_dir + '/README.rst').read()
 
 setup(
-	name='djangosqlsampler',
-	version='0.1.3',
+	name='djangosampler',
+	version='0.2.0',
 	description='Samples a percentage of SQL queries and groups them together for easy viewing',
-	url='https://github.com/colinhowe/djangosqlsampler',
+	url='https://github.com/colinhowe/djangosampler',
 	author='Colin Howe',
 	author_email='colin@colinhowe.co.uk',
-	packages=['djangosqlsampler'],
-    package_data={'djangosqlsampler': ['templates/djangosqlsampler/*','static/djangosqlsampler/*']},
+	packages=['djangosampler', 'djangosampler.plugins', 'djangosampler.migrations'],
+    package_data={'djangosampler': ['templates/djangosampler/*','static/djangosampler/*']},
 	classifiers=[
 		'Development Status :: 4 - Beta',
 		'Environment :: Web Environment',
