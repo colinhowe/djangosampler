@@ -1,5 +1,4 @@
-import functools
-from time import time
+import time
 
 from djangosampler.sampler import should_sample, sample
 
@@ -43,7 +42,7 @@ class Mongo(object):
 
     @staticmethod
     def should_sample_refresh(cursor):
-        return Mongo.privar(cursor, 'id') is not None
+        return Mongo.privar(cursor, 'id') is None
 
     @staticmethod
     def get_refresh_query(cursor):
@@ -88,12 +87,12 @@ class Mongo(object):
         should_sample_method = getattr(Mongo, 'should_sample_%s' % name, 
                 lambda *args, **kwargs: True)
         def sampler(*args, **kwargs):
-            start = time()
+            start = time.time()
             try:
                 should_sample_query = should_sample_method(*args, **kwargs)
                 return method(*args, **kwargs)
             finally:
-                stop = time()
+                stop = time.time()
                 if should_sample_query and should_sample(stop - start):
                     query = sampling_method(*args, **kwargs)
                     if query:
