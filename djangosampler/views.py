@@ -1,6 +1,7 @@
 import json
 from math import ceil
 
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.urlresolvers import reverse
 from django.db import connection
 from django.http import HttpResponseRedirect, HttpResponseForbidden
@@ -12,14 +13,8 @@ from plugins import get_view_addons
 
 PAGE_SIZE = 20
 
-def superuser_required(view_func):
-    def wrapped_view(request, *args, **kwargs):
-        if request.user.is_superuser:
-            return view_func(request, *args, **kwargs)
-        return HttpResponseForbidden('Forbidden')
-    return wrapped_view
 
-@superuser_required
+@staff_member_required
 def queries(request, query_type, offset=0, sort='total_duration'):
     start_offset = int(offset)
     total_queries = Query.objects.filter(query_type=query_type).count()
@@ -77,7 +72,7 @@ def queries(request, query_type, offset=0, sort='total_duration'):
             },
             context_instance=RequestContext(request))
 
-@superuser_required
+@staff_member_required
 def query(request, query_hash):
     query = Query.objects.get(hash=query_hash)
 
@@ -97,7 +92,7 @@ def query(request, query_hash):
             locals(),
             context_instance=RequestContext(request))
 
-@superuser_required
+@staff_member_required
 def index(request):
     query_type = _get_query_types()[0]['name']
     return HttpResponseRedirect(reverse('queries',
