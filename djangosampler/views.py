@@ -94,7 +94,9 @@ def query(request, query_hash):
 
 @staff_member_required
 def index(request):
-    query_type = _get_query_types()[0]['name']
+    query_types = _get_query_types()
+    # don't fail if this is the first time things have been run
+    query_type = _get_query_types()[0]['name'] if query_types else None
     return HttpResponseRedirect(reverse('queries',
         kwargs={
             'query_type': query_type, 
