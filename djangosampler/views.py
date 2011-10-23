@@ -17,6 +17,7 @@ def superuser_required(view_func):
         if request.user.is_superuser:
             return view_func(request, *args, **kwargs)
         return HttpResponseForbidden('Forbidden')
+    wrapped_view.func_name = view_func.func_name
     return wrapped_view
 
 @superuser_required
