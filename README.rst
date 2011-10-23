@@ -106,6 +106,22 @@ The SQL sampler plugin will sample a percentage of SQL queries that occur in
 your application. The samples will be grouped by query and stack traces will be
 recorded to find where the queries are originating.
 
+Django Requests
+~~~~~~~~~~~~~~~
+
+Plugin class: djangosampler.plugins.request.Request
+
+The request plugin installs a Middleware that will sample the time taken by
+requests.
+
+Celery
+~~~~~~
+
+Plugin class: djangosampler.plugins.celery_task.Celery
+
+The Celery plugin uses Celery's signals to sample the time taken to execute
+tasks.
+
 MongoDB
 ~~~~~~~
 
