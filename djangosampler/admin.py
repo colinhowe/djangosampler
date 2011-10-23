@@ -6,21 +6,21 @@ from .models import Query, Stack, Sample
 
 
 class QueryAdmin(admin.ModelAdmin):
-    list_display = ('hash', 'cre',)
-    list_filter = ('cre',)
-    readonly_fields=('cre',)
+    list_display = ('hash', 'created_dt',)
+    list_filter = ('created_dt',)
+    readonly_fields=('created_dt',)
 
 
 class StackAdmin(admin.ModelAdmin):
-    list_display = ('hash', 'cre',)
-    list_filter = ('cre',)
-    readonly_fields=('cre',)
+    list_display = ('hash', 'created_dt',)
+    list_filter = ('created_dt',)
+    readonly_fields=('created_dt',)
 
 
 class SampleAdmin(admin.ModelAdmin):
-    list_display = ('cre',)
-    list_filter = ('cre',)
-    readonly_fields=('cre',)
+    list_display = ('created_dt',)
+    list_filter = ('created_dt',)
+    readonly_fields=('created_dt',)
 
     
 admin.site.register(Query, QueryAdmin)

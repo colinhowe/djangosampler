@@ -13,7 +13,7 @@ class Query(models.Model):
     total_cost = models.FloatField(default=0)
     count = models.IntegerField(default=0)
     query_type = models.CharField(db_index=True, max_length=32)
-    cre = models.DateTimeField(default=datetime.now, editable=False)
+    created_dt = models.DateTimeField(default=datetime.now, editable=False)
 
     class Meta:
         verbose_name_plural = 'queries'
@@ -32,7 +32,7 @@ class Stack(models.Model):
     total_cost = models.FloatField(default=0)
     count = models.IntegerField(default=0)
     query = models.ForeignKey('Query')
-    cre = models.DateTimeField(default=datetime.now, editable=False)
+    created_dt = models.DateTimeField(default=datetime.now, editable=False)
 
     def last_stack_line(self):
         return self.stack.split('\n')[-1]
@@ -50,12 +50,12 @@ class Sample(models.Model):
     cost = models.FloatField()
     stack = models.ForeignKey('Stack')
     params = models.TextField()
-    cre = models.DateTimeField(default=datetime.now, editable=False)
+    created_dt = models.DateTimeField(default=datetime.now, editable=False)
 
     @property
     def duration_ms(self):
         return self.duration * 1000.0
 
     def __unicode__(self):
-        return unicode(self.cre)
+        return unicode(self.created_dt)
 
