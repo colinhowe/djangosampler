@@ -104,6 +104,13 @@ def index(request):
             'offset': 0
     }))
 
+@superuser_required
+def clear(request):
+    Sample.objects.all().delete()
+    Stack.objects.all().delete()
+    Query.objects.all().delete()
+    return HttpResponseRedirect(reverse('index'))
+
 def _get_query_types():
     query_type_names = Query.objects.values_list('query_type', flat=True).distinct()
     query_objs = []

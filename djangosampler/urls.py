@@ -7,5 +7,6 @@ urlpatterns = patterns('',
     url(r'^queries/(?P<query_type>(\w)+)/(?P<sort>(-|\w)+)/(?P<offset>\d+)/$', views.queries, name='queries'),
     url(r'^query/(?P<query_hash>[-0-9]+)/$', views.query, name='query'),
 
+    url(r'^clear/$', views.clear, name='clear'),
     url(r'^$', views.index, name='index'),
 )
