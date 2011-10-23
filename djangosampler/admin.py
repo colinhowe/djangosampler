@@ -7,7 +7,7 @@ from .models import Query, Stack, Sample
 
 class QueryAdmin(admin.ModelAdmin):
     list_display = ('hash', 'created_dt',)
-    list_filter = ('created_dt',)
+    list_filter = ('created_dt', 'query_type',)
     readonly_fields=('created_dt',)
 
 
