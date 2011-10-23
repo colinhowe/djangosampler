@@ -104,7 +104,7 @@ def index(request):
             'offset': 0
     }))
 
-@superuser_required
+@staff_member_required
 def clear(request):
     Sample.objects.all().delete()
     Stack.objects.all().delete()
