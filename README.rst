@@ -114,6 +114,17 @@ Plugin class: djangosampler.plugins.request.Request
 The request plugin installs a Middleware that will sample the time taken by
 requests.
 
+Sample any code
+~~~~~~~~~~~~~~~
+
+This is not strictly a plugin. This is a context manager that will allow you
+to mark blocks of code and sample how long the blocks take to run. E.g.::
+
+    from djangosampler.sampler import sampling
+
+    with sampling('my_code', 'some_fn'):
+        do_something_slow()
+
 Celery
 ~~~~~~
 

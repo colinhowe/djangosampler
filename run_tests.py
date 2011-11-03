@@ -10,7 +10,11 @@ def setup_test_environment():
     os.environ['PYTHONPATH'] = os.path.abspath(__file__)
     
     settings.configure(**{
-        "DATABASE_ENGINE": "sqlite3",
+        "DATABASES": {
+            "default": {
+                "ENGINE": "sqlite3",
+            },
+        },
         "INSTALLED_APPS": ("djangosampler", ),
     })
 

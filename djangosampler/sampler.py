@@ -1,3 +1,4 @@
+from time import time
 import json
 import random
 import traceback
@@ -22,7 +23,7 @@ def _get_tidy_stacktrace():
     tidy_stack = [] 
     sampler_in_stack = False
     for trace in stack[:-3]:
-        if 'djangosampler' in trace[0] and 'sampler.py' in trace[0]:
+        if 'djangosampler' in trace[0] and '/sampler.py' in trace[0]:
             sampler_in_stack = True
         
         tidy_stack.append("%s:%s (%s): %s" % trace)
@@ -112,3 +113,21 @@ def sample(query_type, query, time, params):
             total_cost=F('total_cost') + cost,
             count=F('count') + 1)
 
+class sampling:
+    def __init__(self, sample_type, sample_key, params=()):
+        self.sample_type = sample_type
+        self.sample_key = sample_key
+        self.params = params
+
+    def __enter__(self):
+        self.start_time = time()
+        return self
+
+    def __exit__(self, type, value, traceback):
+        end_time = time()
+        duration = end_time - self.start_time
+
+        if should_sample(duration):
+            sample(self.sample_type, self.sample_key, duration, self.params)
+
+        return False
