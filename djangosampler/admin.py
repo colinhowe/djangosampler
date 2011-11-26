@@ -1,7 +1,5 @@
 from django.contrib import admin
 
-# from lazy_paginator.paginator import LazyPaginator
-
 from .models import Query, Stack, Sample
 
 
