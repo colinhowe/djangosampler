@@ -19,13 +19,14 @@ class Mongo(object):
 
     @staticmethod
     def get_insert_query(collection, *args, **kwargs):
-        return '%s.insert(...)' % collection.name
+        return '%s.insert(...)' % collection.name, 'mongo'
 
     @staticmethod
     def get_update_query(collection, spec, document, upsert=False, *args, **kwargs):
         safe_spec = Mongo.parameterise_dict(spec)
         update_method = upsert and 'upsert' or 'update'
-        return '%s.%s(%s)' % (collection.name, update_method, repr(safe_spec))
+        query = '%s.%s(%s)' % (collection.name, update_method, repr(safe_spec))
+        return query, 'mongo'
 
     @staticmethod
     def get_remove_query(collection, spec_or_id, safe=False, **kwargs):
@@ -34,7 +35,7 @@ class Mongo(object):
         else:
             safe_spec = { '_id': spec_or_id }
 
-        return '%s.remove(%s)' % (collection.name, repr(safe_spec))
+        return '%s.remove(%s)' % (collection.name, repr(safe_spec)), 'mongo'
     
     @staticmethod
     def privar(cursor, name):
@@ -43,6 +44,7 @@ class Mongo(object):
     @staticmethod
     def pre_refresh(cursor):
         cursor._is_getmore = Mongo.privar(cursor, 'id') is not None
+        cursor._slave_okay = Mongo.privar(cursor, 'slave_okay')
 
     @staticmethod
     def get_refresh_query(cursor):
@@ -81,7 +83,11 @@ class Mongo(object):
         query_spec = Mongo.parameterise_dict(query_spec)
         if ordering:
             query_spec['ordering'] = ordering
-        return "%s.%s(%s)" % (collection_name, command, repr(query_spec))
+        query_type = 'mongo'
+        if cursor._slave_okay:
+            query_type = 'mongo slave'
+        query = "%s.%s(%s)" % (collection_name, command, repr(query_spec))
+        return query, query_type
 
     @staticmethod
     def make_wrapper(name, method):
@@ -96,9 +102,9 @@ class Mongo(object):
             finally:
                 stop = time.time()
                 if should_sample(stop - start):
-                    query = sampling_method(*args, **kwargs)
+                    query, query_type = sampling_method(*args, **kwargs)
                     if query:
-                        sample('mongo', query, stop - start, [args, kwargs])
+                        sample(query_type, query, stop - start, [args, kwargs])
 
         return sampler
 

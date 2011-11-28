@@ -69,7 +69,7 @@ def sample(query_type, query, time, params):
     # query in the stack hash to ensure that it is unique for every query
     stack_hash = hash((tuple(stack), query))
 
-    query_hash = hash(query)
+    query_hash = hash((query_type, query))
     try:
         query_model, _ = Query.objects.get_or_create(
                 hash=query_hash, defaults={
