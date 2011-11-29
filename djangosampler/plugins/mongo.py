@@ -88,7 +88,6 @@ class Mongo(object):
         query_type = 'mongo'
         if cursor._slave_okay:
             query_type = 'mongo slave'
-        print 'Query type: %s' % query_type
         query = "%s.%s(%s)" % (collection_name, command, repr(query_spec))
         return query, query_type
 
