@@ -44,7 +44,9 @@ class Mongo(object):
     @staticmethod
     def pre_refresh(cursor):
         cursor._is_getmore = Mongo.privar(cursor, 'id') is not None
-        cursor._slave_okay = Mongo.privar(cursor, 'slave_okay')
+        cursor._slave_okay = (
+            Mongo.privar(cursor, 'slave_okay') 
+            or not Mongo.privar(cursor, 'must_use_master'))
 
     @staticmethod
     def get_refresh_query(cursor):
@@ -86,6 +88,7 @@ class Mongo(object):
         query_type = 'mongo'
         if cursor._slave_okay:
             query_type = 'mongo slave'
+        print 'Query type: %s' % query_type
         query = "%s.%s(%s)" % (collection_name, command, repr(query_spec))
         return query, query_type
 
