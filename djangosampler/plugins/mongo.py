@@ -44,9 +44,7 @@ class Mongo(object):
     @staticmethod
     def pre_refresh(cursor):
         cursor._is_getmore = Mongo.privar(cursor, 'id') is not None
-        cursor._slave_okay = (
-            Mongo.privar(cursor, 'slave_okay') 
-            or not Mongo.privar(cursor, 'must_use_master'))
+        cursor._slave_okay = Mongo.privar(cursor, 'slave_okay')
 
     @staticmethod
     def get_refresh_query(cursor):

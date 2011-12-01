@@ -12,6 +12,7 @@ from models import Query, Sample, Stack
 
 USE_COST = getattr(settings, 'DJANGO_SAMPLER_USE_COST', False)
 FREQ = float(getattr(settings, 'DJANGO_SAMPLER_FREQ', 0))
+BASE_TIME = float(getattr(settings, 'DJANGO_SAMPLER_BASE_TIME', 0.005))
 
 def _get_tidy_stacktrace():
     """Gets a tidy stacktrace. The tail of the stack is removed to exclude 
@@ -30,9 +31,16 @@ def _get_tidy_stacktrace():
 
     return "\n".join(tidy_stack), sampler_in_stack
 
+def _calculate_bias(time):
+    bias = time / BASE_TIME
+    if FREQ * bias > 1:
+        bias = 1 / FREQ
+    return bias
+
 def _calculate_cost(time):
     if USE_COST:
-        cost = max(1.0, time * FREQ)  / FREQ
+        bias = _calculate_bias(time)
+        cost = time / bias
         return cost
     else:
         return 0.0
@@ -48,7 +56,8 @@ def should_sample(time):
     be multiplied by the time if cost-based sampling is enabled.
     '''
     if USE_COST:
-        return time * random.random() > 1 - FREQ
+        bias = _calculate_bias(time)
+        return random.random() > 1 - FREQ * bias
     else:
         return random.random() < FREQ
  

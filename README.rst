@@ -40,6 +40,9 @@ Configure:
 
    There are several plugins available and it is worthwhile reading through
    them to get the most use out of this tool.
+ * If you are using cost based sampling then set DJANGO_SAMPLER_BASE_TIME to
+   the expected duration of a normal query in seconds. By default this is set
+   to 5ms.
 
 
 Viewing Results
