@@ -1,9 +1,26 @@
 {% extends "djangosampler/base.html" %}
 {% load humanize %}
+{% block menu %}
+    <a href="{{ back_link }}">Back</a>
+{% endblock %}
 {% block body %}
-<h3>{{ query.count|intcomma }} occurrences, {{ query.total_duration|floatformat:4|intcomma }}s, {{ query.total_cost|intcomma }} cost</h3>
+<h3>Query</h3>
 <pre>{{ query.query }}</pre>
 {{ extra|safe }}
+<h3>Recent Performance</h3>
+<h4>Today: {{ query.count|intcomma }} occurrences, {{ query.total_duration|floatformat:4|intcomma }}s, {{ query.total_cost|intcomma }} cost</h4>
+<table class='performance-table'>
+    {% for recent_date, recent_query in recent_queries %}
+    <tr>
+        <td>{{ recent_date }}</td>
+        <td>
+        {% if recent_query %}
+            {{ recent_query.count|intcomma }} occurrences, {{ recent_query.total_duration|floatformat:4|intcomma }}s, {{ recent_query.total_cost|intcomma }} cost
+        {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
 <h3>Callers</h3>
 {% for stack in stacks %}
 <h4>{{ stack.count|intcomma }} times, {{ stack.total_duration|floatformat:4|intcomma }}s, {{ stack.total_cost|floatformat:4|intcomma }} cost</h4>

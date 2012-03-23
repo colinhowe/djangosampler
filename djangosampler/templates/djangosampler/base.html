@@ -5,10 +5,9 @@
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}djangosampler/sampler.css" />
     </head>
     <body>
-        {% for query_type in query_types %}
-            <a href="{{ query_type.url }}">{{ query_type.friendly_name }}</a>
-        {% endfor %}
-        <a href="{% url clear %}">Clear data</a>
+        <div class="menu">
+            {% block menu %}{% endblock %}
+        </div>
         {% block body %}{% endblock %}
         <div id="footer">Django Sampler written by <a href="http://www.colinhowe.co.uk">Colin Howe</a>. Source on <a href="http://github.com/colinhowe/djangosampler">Github.</a></div>
     </body>

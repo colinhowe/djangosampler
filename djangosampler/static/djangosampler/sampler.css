@@ -35,6 +35,18 @@ a {
     color: #0000dd;
 }
 
+.menu a, .menu span {
+    padding-right: 10px;
+}
+
+.date-selector {
+    padding-bottom: 10px;
+}
+
+.performance-table {
+    width: auto;
+}
+
 pre {
     background-color: #ddd;
     padding: 10px;

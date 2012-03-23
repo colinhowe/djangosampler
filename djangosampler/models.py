@@ -13,7 +13,8 @@ class Query(models.Model):
     total_cost = models.FloatField(default=0)
     count = models.IntegerField(default=0)
     query_type = models.CharField(db_index=True, max_length=32)
-    created_dt = models.DateTimeField(default=datetime.now, editable=False)
+    created_dt = models.DateTimeField(
+            default=datetime.now, editable=False, db_index=True)
 
     class Meta:
         verbose_name_plural = 'queries'
@@ -21,6 +22,11 @@ class Query(models.Model):
     def __unicode__(self):
         return self.hash
 
+    def get_hash_for_date(self, hash_date):
+        '''
+        Gets a hash for the same query but on a different date.
+        '''
+        return hash((hash_date, self.query_type, self.query))
 
 class Stack(models.Model):
     """
