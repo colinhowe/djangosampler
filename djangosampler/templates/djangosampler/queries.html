@@ -35,7 +35,7 @@
             <td>{{ query.count }}</td>
             <td>{{ query.total_duration|floatformat:4 }}</td>
             <td>{{ query.total_cost }}</td>
-            <td>{{ query.query }}</td>
+            <td>{{ query.query|truncatechars:2048 }}</td>
         </tr>
     {% endfor %}
 </table>
