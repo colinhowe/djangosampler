@@ -18,19 +18,23 @@ Installation
 
 Install::
 
+    pip install git+git://github.com/colinhowe/djangosampler.git#djangosampler
+
+or download an run ::
+
     python setup.py install
 
 Configure:
- * Add djangosampler to your INSTALLED_APPS
- * Add the tables (manage.py syncdb or manage.py migrate if you use South)
+ * Add ``djangosampler`` to your INSTALLED_APPS
+ * Add the tables (``manage.py syncdb`` or ``manage.py migrate`` if you use South)
  * Add the views::
 
     urlpatterns += patterns('',
         (r'^sampler/', include('djangosampler.urls')),
     )
 
- * Set DJANGO_SAMPLER_FREQ to a value other than 0
- * Set DJANGO_SAMPLER_PLUGINS to a list of plugins. For just sampling SQL a 
+ * Set ``DJANGO_SAMPLER_FREQ`` to a value between 0 and 1
+ * Set ``DJANGO_SAMPLER_PLUGINS`` to a list of plugins. For just sampling SQL a 
    sensible default is::
     
     DJANGO_SAMPLER_PLUGINS = (
@@ -40,7 +44,7 @@ Configure:
 
    There are several plugins available and it is worthwhile reading through
    them to get the most use out of this tool.
- * If you are using cost based sampling then set DJANGO_SAMPLER_BASE_TIME to
+ * If you are using cost based sampling then set ``DJANGO_SAMPLER_BASE_TIME`` to
    the expected duration of a normal query in seconds. By default this is set
    to 5ms.
 
@@ -74,7 +78,7 @@ Available plugins and their settings are described in the Plugins section below.
 DJANGO_SAMPLER_FREQ
 ~~~~~~~~~~~~~~~~~~~
 
-DJANGO_SAMPLER_FREQ configures the percentage of queries that will be recorded. 
+``DJANGO_SAMPLER_FREQ`` configures the percentage of queries that will be recorded. 
 It should be between 0.0 and 1.0.
 
 If this is not set then no plugins will be installed and your code will run as 
@@ -83,7 +87,7 @@ normal.
 DJANGO_SAMPLER_USE_COST
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-DJANGO_SAMPLER_USE_COST will enable cost-based sampling. This causes queries 
+``DJANGO_SAMPLER_USE_COST`` will enable cost-based sampling. This causes queries 
 that run for a long time to be sampled more often than short queries. 
 
 The chance that a query is sampled is multiplied by the total time the query
@@ -103,7 +107,7 @@ described in the section 'Writing Your Own Plugins'.
 Django SQL
 ~~~~~~~~~~
 
-Plugin class: djangosampler.plugins.sql.Sql
+Plugin class: ``djangosampler.plugins.sql.Sql``
 
 The SQL sampler plugin will sample a percentage of SQL queries that occur in
 your application. The samples will be grouped by query and stack traces will be
@@ -112,7 +116,7 @@ recorded to find where the queries are originating.
 Django Requests
 ~~~~~~~~~~~~~~~
 
-Plugin class: djangosampler.plugins.request.Request
+Plugin class: ``djangosampler.plugins.request.Request``
 
 The request plugin installs a Middleware that will sample the time taken by
 requests.
@@ -131,7 +135,7 @@ to mark blocks of code and sample how long the blocks take to run. E.g.::
 Celery
 ~~~~~~
 
-Plugin class: djangosampler.plugins.celery_task.Celery
+Plugin class: ``djangosampler.plugins.celery_task.Celery``
 
 The Celery plugin uses Celery's signals to sample the time taken to execute
 tasks.
@@ -139,7 +143,7 @@ tasks.
 MongoDB
 ~~~~~~~
 
-Plugin class: djangosampler.plugins.mongo.Mongo
+Plugin class: ``djangosampler.plugins.mongo.Mongo``
 
 The MongoDB plugin will sample a percentage of Mongo commands (queries,
 inserts, etc) that occur in your application. The samples will be grouped by
