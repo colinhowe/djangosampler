@@ -20,7 +20,7 @@ Install::
 
     pip install git+git://github.com/colinhowe/djangosampler.git#djangosampler
 
-or download an run ::
+or download and run ::
 
     python setup.py install
 
