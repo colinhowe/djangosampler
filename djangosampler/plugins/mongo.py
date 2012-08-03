@@ -71,7 +71,8 @@ class Mongo(object):
                 command = 'cursor_more'
             else:
                 command = 'query'
-            query_spec['query'] = query_son['$query']
+            if '$query' in query_son:
+                query_spec['query'] = query_son['$query']
 
             def fmt(field, direction):
                 return '{0}{1}'.format({-1: '-', 1: '+'}[direction], field)
