@@ -12,14 +12,14 @@ class Sql(object):
 
     @staticmethod
     def install():
-        import django.db.backends
-        old_cursor = django.db.backends.BaseDatabaseWrapper.cursor
+        from django.db.backends  import BaseDatabaseWrapper
+        old_cursor = BaseDatabaseWrapper.cursor
 
-        def get_cursor(self):
-            cursor = old_cursor(self)
-            return SamplingCursorWrapper(cursor, self)
+        def cursor(self):
+            new_cursor = old_cursor(self)
+            return SamplingCursorWrapper(new_cursor, self)
 
-        django.db.backends.BaseDatabaseWrapper.cursor = get_cursor 
+        setattr(BaseDatabaseWrapper.cursor.im_class, 'cursor', cursor)
 
     @staticmethod
     def get_query_view_addons():
