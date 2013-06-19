@@ -63,6 +63,19 @@ def should_sample(time):
         return random.random() < FREQ
  
 
+def drop_exceptions(fn):
+    '''Decorator that makes the given method drop any exceptions that fall out of
+    it. This is useful when doing sampling as it ensures that the sampler cannot
+    cause a breakage.
+    '''
+    def wrapped(*args, **kwargs):
+        try:
+            return fn(*args, **kwargs)
+        except:
+            pass
+    return wrapped
+
+@drop_exceptions
 def sample(query_type, query, time, params):
     '''Main method that records the given query. 
     

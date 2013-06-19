@@ -1,5 +1,5 @@
 from setuptools import setup
-    
+
 import os
 
 root_dir = os.path.dirname(__file__)
@@ -9,7 +9,7 @@ long_desc = open(root_dir + '/README.rst').read()
 
 setup(
 	name='djangosampler',
-	version='0.6.2',
+	version='0.6.3',
 	description='Samples a percentage of SQL queries and groups them together for easy viewing',
 	url='https://github.com/colinhowe/djangosampler',
 	author='Colin Howe',
