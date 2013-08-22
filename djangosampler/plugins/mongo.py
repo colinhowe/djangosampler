@@ -4,6 +4,10 @@ from djangosampler.sampler import should_sample, sample
 
 import pymongo
 
+# Read preferences that are regarded as "slave reads"
+slave_prefs = (pymongo.ReadPreference.SECONDARY_PREFERRED,
+        pymongo.ReadPreference.SECONDARY)
+
 class Mongo(object):
     '''Plugin that patches pyMongo to sample queries.
     '''
@@ -45,6 +49,7 @@ class Mongo(object):
     def pre_refresh(cursor):
         cursor._is_getmore = Mongo.privar(cursor, 'id') is not None
         cursor._slave_okay = Mongo.privar(cursor, 'slave_okay')
+        cursor._read_preference = Mongo.privar(cursor, 'read_preference')
 
     @staticmethod
     def get_refresh_query(cursor):
@@ -85,7 +90,7 @@ class Mongo(object):
         if ordering:
             query_spec['ordering'] = ordering
         query_type = 'mongo'
-        if cursor._slave_okay:
+        if cursor._slave_okay or cursor._read_preference in (slave_prefs):
             query_type = 'mongo slave'
         query = "%s.%s(%s)" % (collection_name, command, repr(query_spec))
         return query, query_type

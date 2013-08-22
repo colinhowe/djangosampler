@@ -9,7 +9,7 @@ long_desc = open(root_dir + '/README.rst').read()
 
 setup(
 	name='djangosampler',
-	version='0.6.4',
+	version='0.6.5',
 	description='Samples a percentage of SQL queries and groups them together for easy viewing',
 	url='https://github.com/colinhowe/djangosampler',
 	author='Colin Howe',
