@@ -16,18 +16,18 @@ FREQ = float(getattr(settings, 'DJANGO_SAMPLER_FREQ', 0))
 BASE_TIME = float(getattr(settings, 'DJANGO_SAMPLER_BASE_TIME', 0.005))
 
 def _get_tidy_stacktrace():
-    """Gets a tidy stacktrace. The tail of the stack is removed to exclude 
+    """Gets a tidy stacktrace. The tail of the stack is removed to exclude
     sampler internals. Will return a tuple of the stack printed cleanly and
     a boolean indicating whether the stack contains traces from the sampler
     itself (indicates the sampler being sampled).
     """
     stack = traceback.extract_stack()
-    tidy_stack = [] 
+    tidy_stack = []
     sampler_in_stack = False
     for trace in stack[:-3]:
         if 'djangosampler' in trace[0] and '/sampler.py' in trace[0]:
             sampler_in_stack = True
-        
+
         tidy_stack.append("%s:%s (%s): %s" % trace)
 
     return "\n".join(tidy_stack), sampler_in_stack
@@ -56,12 +56,15 @@ def should_sample(time):
     '''Determines if a sample should be taken. The probability of this will
     be multiplied by the time if cost-based sampling is enabled.
     '''
+    if not FREQ:
+        return False
+
     if USE_COST:
         bias = _calculate_bias(time)
         return random.random() > 1 - FREQ * bias
     else:
         return random.random() < FREQ
- 
+
 
 def drop_exceptions(fn):
     '''Decorator that makes the given method drop any exceptions that fall out of
@@ -77,10 +80,10 @@ def drop_exceptions(fn):
 
 @drop_exceptions
 def sample(query_type, query, time, params):
-    '''Main method that records the given query. 
-    
+    '''Main method that records the given query.
+
     The params argument will be
-    recorded alongside individual samples as a JSON object. It is a suitable 
+    recorded alongside individual samples as a JSON object. It is a suitable
     place to store things like SQL parameters.
     '''
     stack, recursed = _get_tidy_stacktrace()
@@ -106,7 +109,7 @@ def sample(query_type, query, time, params):
 
     try:
         stack_model, _ = Stack.objects.get_or_create(
-                hash=stack_hash, 
+                hash=stack_hash,
                 defaults={'stack': stack, 'query': query_model})
     except DatabaseError:
         # This is likely because the database hasn't been created yet.
