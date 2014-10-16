@@ -17,20 +17,18 @@ BASE_TIME = float(getattr(settings, 'DJANGO_SAMPLER_BASE_TIME', 0.005))
 
 def _get_tidy_stacktrace():
     """Gets a tidy stacktrace. The tail of the stack is removed to exclude
-    sampler internals. Will return a tuple of the stack printed cleanly and
-    a boolean indicating whether the stack contains traces from the sampler
-    itself (indicates the sampler being sampled).
+    sampler internals. Will return a stack printed cleanly and without any
+    trace of djangosampler.
     """
     stack = traceback.extract_stack()
     tidy_stack = []
-    sampler_in_stack = False
     for trace in stack[:-3]:
         if 'djangosampler' in trace[0] and '/sampler.py' in trace[0]:
-            sampler_in_stack = True
+            continue
+        else:
+            tidy_stack.append("%s:%s (%s): %s" % trace)
 
-        tidy_stack.append("%s:%s (%s): %s" % trace)
-
-    return "\n".join(tidy_stack), sampler_in_stack
+    return "\n".join(tidy_stack)
 
 def _calculate_bias(time):
     bias = time / BASE_TIME
@@ -86,10 +84,11 @@ def sample(query_type, query, time, params):
     recorded alongside individual samples as a JSON object. It is a suitable
     place to store things like SQL parameters.
     '''
-    stack, recursed = _get_tidy_stacktrace()
-    if recursed:
-        # Don't log the sampler being sampled
+    # Never try to sample anything containing djangosampler
+    if 'djangosampler' in query:
         return
+
+    stack = _get_tidy_stacktrace()
 
     # The same stack may create different queries - so we have to include the
     # query in the stack hash to ensure that it is unique for every query
