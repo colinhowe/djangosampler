@@ -1,5 +1,5 @@
 import plugins
 
-VERSION = '0.6.8'
+VERSION = '0.7.0'
 
 plugins.install_plugins()
