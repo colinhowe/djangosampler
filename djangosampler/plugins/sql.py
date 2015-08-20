@@ -12,7 +12,7 @@ class Sql(object):
 
     @staticmethod
     def install():
-        from django.db.backends  import BaseDatabaseWrapper
+        from django.db.backends.base.base import BaseDatabaseWrapper
         old_cursor = BaseDatabaseWrapper.cursor
 
         def cursor(self):
