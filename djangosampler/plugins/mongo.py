@@ -42,6 +42,11 @@ class Mongo(object):
         return '%s.remove(%s)' % (collection.name, repr(safe_spec)), 'mongo'
     
     @staticmethod
+    def get_aggregate_query(collection, pipeline, **kwargs):
+        safe_spec = [Mongo.parameterise_dict(stage) for stage in pipeline]
+        return '%s.aggregate(%s)' % (collection.name, repr(safe_spec)), 'mongo'
+
+    @staticmethod
     def privar(cursor, name):
         return getattr(cursor, '_Cursor__{0}'.format(name))
 
@@ -117,14 +122,15 @@ class Mongo(object):
 
     @staticmethod
     def install():
-        wrapped_methods = {
-            'insert': pymongo.collection.Collection.insert,
-            'update': pymongo.collection.Collection.update,
-            'remove': pymongo.collection.Collection.remove,
-            'refresh': pymongo.cursor.Cursor._refresh,
-        }
+        wrapped_methods = [
+            ('insert', pymongo.collection.Collection.insert),
+            ('update', pymongo.collection.Collection.update),
+            ('remove', pymongo.collection.Collection.remove),
+            ('refresh', pymongo.cursor.Cursor._refresh),
+            ('aggregate', pymongo.collection.Collection.aggregate),
+        ]
 
-        for name, method in wrapped_methods.items():
+        for name, method in wrapped_methods:
             setattr(
                 method.im_class, 
                 method.im_func.func_name, 
