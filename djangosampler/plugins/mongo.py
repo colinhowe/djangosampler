@@ -107,6 +107,20 @@ class Mongo(object):
         return query, query_type
 
     @staticmethod
+    def get_count_query(cursor):
+        collection = Mongo.privar(cursor, 'collection')
+        collection_name = collection.full_name 
+        collection_name = collection_name.split('.')[1]
+
+        query_son = Mongo.privar(cursor, 'query_spec')()
+        query_spec = {'query': Mongo.parameterise_dict(query_son)}
+        query_type = 'mongo'
+        if collection.read_preference in slave_prefs:
+            query_type = 'mongo slave'
+        query = "%s.%s(%s)" % (collection_name, 'count', repr(query_spec))
+        return query, query_type
+
+    @staticmethod
     def make_wrapper(name, method):
         sampling_method = getattr(Mongo, 'get_%s_query' % name)
         pre_invoke = getattr(Mongo, 'pre_%s' % name, None)
@@ -131,8 +145,9 @@ class Mongo(object):
             ('insert', pymongo.collection.Collection.insert),
             ('update', pymongo.collection.Collection.update),
             ('remove', pymongo.collection.Collection.remove),
-            ('refresh', pymongo.cursor.Cursor._refresh),
             ('aggregate', pymongo.collection.Collection.aggregate),
+            ('count', pymongo.collection.Cursor.count),
+            ('refresh', pymongo.cursor.Cursor._refresh),
         ]
 
         for name, method in wrapped_methods:
