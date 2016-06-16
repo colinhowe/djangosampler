@@ -48,7 +48,6 @@ class Mongo(object):
     @staticmethod
     def pre_refresh(cursor):
         cursor._is_getmore = Mongo.privar(cursor, 'id') is not None
-        cursor._slave_okay = Mongo.privar(cursor, 'slave_okay')
         cursor._read_preference = Mongo.privar(cursor, 'read_preference')
 
     @staticmethod
@@ -92,7 +91,7 @@ class Mongo(object):
         if ordering:
             query_spec['ordering'] = ordering
         query_type = 'mongo'
-        if cursor._slave_okay or cursor._read_preference in (slave_prefs):
+        if cursor._read_preference in (slave_prefs):
             query_type = 'mongo slave'
         query = "%s.%s(%s)" % (collection_name, command, repr(query_spec))
         return query, query_type
