@@ -45,7 +45,7 @@ class Mongo(object):
     def get_aggregate_query(collection, pipeline, **kwargs):
         safe_spec = [Mongo.parameterise_dict(stage) for stage in pipeline]
         if collection.read_preference in slave_prefs:
-            query_type = 'mongo_slave'
+            query_type = 'mongo slave'
         else:
             query_type = 'mongo'
         return '%s.aggregate(%s)' % (
