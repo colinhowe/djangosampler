@@ -107,7 +107,7 @@ class Mongo(object):
         return query, query_type
 
     @staticmethod
-    def get_count_query(cursor):
+    def get_count_query(cursor, *args, **kwargs):
         collection = Mongo.privar(cursor, 'collection')
         collection_name = collection.full_name 
         collection_name = collection_name.split('.')[1]
