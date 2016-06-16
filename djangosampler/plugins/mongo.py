@@ -44,7 +44,12 @@ class Mongo(object):
     @staticmethod
     def get_aggregate_query(collection, pipeline, **kwargs):
         safe_spec = [Mongo.parameterise_dict(stage) for stage in pipeline]
-        return '%s.aggregate(%s)' % (collection.name, repr(safe_spec)), 'mongo'
+        if collection.read_preference in slave_prefs:
+            query_type = 'mongo_slave'
+        else:
+            query_type = 'mongo'
+        return '%s.aggregate(%s)' % (
+            collection.name, repr(safe_spec)), query_type
 
     @staticmethod
     def privar(cursor, name):
